@@ -1,56 +1,15 @@
 'use client';
 
 import { useState } from 'react';
-import { createClient } from '../utils/supabase/client';
-import { useRouter } from 'next/navigation';
+import { useAuth } from '@/hooks/useAuth'; // Injecting the ViewModel!
 
 export default function LoginPage() {
+  // Local UI state (Just what the user is typing right now)
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
   
-  const router = useRouter();
-  const supabase = createClient();
-
-  const handleSignUp = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError(null);
-
-    // Call the Supabase API to register the user
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-    });
-
-    if (error) {
-      setError(error.message);
-    } else {
-      alert('Success! Check your email for a confirmation link.');
-    }
-    setLoading(false);
-  };
-
-  const handleSignIn = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError(null);
-
-    // Call the Supabase API to log the user in
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-
-    if (error) {
-      setError(error.message);
-    } else {
-      // If successful, navigate them to the profile dashboard
-      router.push('/profile');
-    }
-    setLoading(false);
-  };
+  // Observing the ViewModel
+  const { signIn, signUp, loading, error } = useAuth();
 
   return (
     <main className="min-h-screen pt-24 pb-12 px-4 bg-neutral-900 flex items-center justify-center">
@@ -81,18 +40,21 @@ export default function LoginPage() {
             />
           </div>
 
+          {/* Observing the ViewModel's error state */}
           {error && <p className="text-red-400 text-sm text-center">{error}</p>}
 
           <div className="flex space-x-4 pt-4">
             <button
-              onClick={handleSignIn}
-              disabled={loading}
+              type="button"
+              onClick={() => signIn(email, password)} // Passing events to the ViewModel
+              disabled={loading} // Observing the ViewModel's loading state
               className="flex-1 bg-blue-600 text-white font-bold py-3 rounded-lg hover:bg-blue-700 transition disabled:opacity-50"
             >
               Sign In
             </button>
             <button
-              onClick={handleSignUp}
+              type="button"
+              onClick={() => signUp(email, password)}
               disabled={loading}
               className="flex-1 bg-neutral-700 text-white font-bold py-3 rounded-lg hover:bg-neutral-600 transition disabled:opacity-50"
             >

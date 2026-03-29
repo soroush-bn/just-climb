@@ -1,42 +1,17 @@
-'use client'; // Required because we are using React Hooks (useState, useEffect)
+'use client'; 
 
 import Link from 'next/link';
-import { useState, useEffect, useRef } from 'react';
+import { useLanding } from '@/hooks/useLanding'; // Injecting the ViewModel!
 
 export default function Home() {
-  // 1. The State: Tracks which panel is currently "hovered"
-  const [activePanel, setActivePanel] = useState('climbers');
-  
-  // 2. The Reference: Points to our Top Hero Section
-  const heroRef = useRef(null);
-
-  // 3. The Observer: Watches the scroll position to clear the URL hash
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        // If the hero section is at least 50% visible on screen
-        if (entries[0].isIntersecting) {
-          // Silently remove the #solutions hash without refreshing the page
-          window.history.replaceState(null, '', '/');
-        }
-      },
-      { threshold: 0.5 } 
-    );
-
-    if (heroRef.current) {
-      observer.observe(heroRef.current);
-    }
-
-    // Cleanup the observer when the page closes
-    return () => observer.disconnect();
-  }, []);
+  // Observing the ViewModel
+  const { activePanel, setActivePanel, heroRef } = useLanding();
 
   return (
     <main className="h-screen w-full overflow-y-scroll snap-y snap-mandatory scroll-smooth bg-black">
       
       {/* =========================================
           SECTION 1: THE HERO 
-          We attach our 'heroRef' here so the Observer can watch it!
           ========================================= */}
       <section ref={heroRef} className="relative h-screen w-full snap-start overflow-hidden">
         <video
@@ -69,7 +44,6 @@ export default function Home() {
 
       {/* =========================================
           SECTION 2: THE SOLUTIONS 
-          When the mouse leaves this entire section, we reset the active panel back to 'climbers'
           ========================================= */}
       <section 
         id="solutions" 
@@ -126,7 +100,8 @@ export default function Home() {
         </Link>
 
       </section>
-{/* =========================================
+
+      {/* =========================================
           SECTION 3: ABOUT US
           ========================================= */}
       <section 
@@ -138,7 +113,6 @@ export default function Home() {
             Who We Are
           </h2>
           
-          {/* A subtle decorative line to make it look premium */}
           <div className="w-24 h-1 bg-blue-500 mx-auto rounded-full shadow-[0_0_15px_rgba(59,130,246,0.5)]"></div>
           
           <p className="text-xl md:text-3xl text-gray-300 leading-relaxed font-light mt-8 drop-shadow-sm">

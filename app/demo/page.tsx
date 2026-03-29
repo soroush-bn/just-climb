@@ -1,55 +1,10 @@
-'use client'; // This tells Next.js this is an interactive UI component, not a static server page
+'use client'; 
 
-import { useState } from 'react';
+import { useDemoForm } from '@/hooks/useDemoForm'; // Injecting the ViewModel!
 
 export default function DemoPage() {
-  // Equivalent to: var status by remember { mutableStateOf("IDLE") }
-  const [status, setStatus] = useState<'IDLE' | 'LOADING' | 'SUCCESS' | 'ERROR'>('IDLE');
-
-  // Equivalent to holding the values of your EditTexts
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    gym: '',
-    message: ''
-  });
-
-  // Equivalent to an EditText textWatcher / onValueChange
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  // Equivalent to your Submit Button's setOnClickListener
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault(); // Stops the browser from reloading the page
-    setStatus('LOADING');
-
-    try {
-      // Equivalent to a Retrofit POST request
-      const response = await fetch('https://api.web3forms.com/submit', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json'
-        },
-        body: JSON.stringify({
-          // ⚠️ PASTE YOUR WEB3FORMS ACCESS KEY HERE ⚠️
-          access_key: '21de23c6-59a4-4249-bbf9-e44a4a8872c9', 
-          ...formData
-        })
-      });
-
-      const result = await response.json();
-      if (result.success) {
-        setStatus('SUCCESS');
-        setFormData({ name: '', email: '', gym: '', message: '' }); // Clear form
-      } else {
-        setStatus('ERROR');
-      }
-    } catch (error) {
-      setStatus('ERROR');
-    }
-  };
+  // Observing the ViewModel
+  const { status, formData, handleChange, handleSubmit } = useDemoForm();
 
   return (
     <main className="min-h-screen pt-24 pb-12 px-4 bg-neutral-900 flex items-center justify-center">

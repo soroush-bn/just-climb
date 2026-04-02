@@ -16,12 +16,20 @@ export default function NavBar() {
           {/* Navigation Links */}
           <div className="hidden md:block">
             <div className="ml-10 flex items-baseline space-x-8">
+
+<Link href="/segmentation">
+    <button className="flex items-center gap-2 text-sm font-bold bg-gradient-to-r from-emerald-500 to-blue-500 text-white px-4 py-2 rounded-full hover:scale-105 transition-transform shadow-lg shadow-blue-500/20">
+      <span className="text-lg">✨</span> Try AI Vision
+    </button>
+  </Link>
+
 <Link href="/#solutions" className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition">
   Solutions
 </Link>
               <Link href="/profile" className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition">
                 Profile
               </Link>
+              
               <Link href="/#about" className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition">
                 About
               </Link>
